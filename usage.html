@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>How to Use Django Phone Verify? &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to write custom backend?" href="how_to_write_custom_backend.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="how-to-use-django-phone-verify">
+<h1>How to Use Django Phone Verify?<a class="headerlink" href="#how-to-use-django-phone-verify" title="Permalink to this heading">¶</a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>django-phone-verify
+</pre></div>
+</div>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add app to <code class="docutils literal notranslate"><span class="pre">INSTALLED_APPS</span></code>:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In settings.py:</span>
+
+<span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="o">...</span>
+    <span class="s1">&#39;phone_verify&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Add settings in your <code class="docutils literal notranslate"><span class="pre">settings.py</span></code> file:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings for phone_verify</span>
+<span class="n">PHONE_VERIFICATION</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;BACKEND&#39;</span><span class="p">:</span> <span class="s1">&#39;phone_verify.backends.twilio.TwilioBackend&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;OPTIONS&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;SID&#39;</span><span class="p">:</span> <span class="s1">&#39;fake&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SECRET&#39;</span><span class="p">:</span> <span class="s1">&#39;fake&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;FROM&#39;</span><span class="p">:</span> <span class="s1">&#39;+14755292729&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SANDBOX_TOKEN&#39;</span><span class="p">:</span><span class="s1">&#39;123456&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;TOKEN_LENGTH&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="s1">&#39;MESSAGE&#39;</span><span class="p">:</span> <span class="s1">&#39;Welcome to </span><span class="si">{app}</span><span class="s1">! Please use security code </span><span class="si">{security_code}</span><span class="s1"> to proceed.&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;APP_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;Phone Verify&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SECURITY_CODE_EXPIRATION_TIME&#39;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>  <span class="c1"># In seconds only</span>
+    <span class="s1">&#39;VERIFY_SECURITY_CODE_ONLY_ONCE&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># If False, then a security code can be used multiple times for verification</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Migrate the database:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>manage.py<span class="w"> </span>migrate
+</pre></div>
+</div>
+<p>This would create <code class="docutils literal notranslate"><span class="pre">SMSVerification</span></code> table, which is used to store <code class="docutils literal notranslate"><span class="pre">phone_number</span></code>, <code class="docutils literal notranslate"><span class="pre">session_token</span></code> and <code class="docutils literal notranslate"><span class="pre">security_code</span></code>.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
+<p><strong>NOTE</strong>: <code class="docutils literal notranslate"><span class="pre">django-phone-verify</span></code> provides few APIs which can be added to your list of API endpoints. Its functionality can be extended further based on your use-case as explained below.</p>
+<section id="case-1-verify-phone-number-before-after-user-registration">
+<h3>Case 1: Verify phone number before/after user registration<a class="headerlink" href="#case-1-verify-phone-number-before-after-user-registration" title="Permalink to this heading">¶</a></h3>
+<p>This case is suitable if you simply want to access the endpoints to register and verify a phone number (before or after the user registration).</p>
+<p>To access the endpoints available in <a class="reference external" href="../phone_verify/docs/api_endpoints.rst">api_endpoints.rst</a>, you just need to update your API’s URLs.</p>
+<ul class="simple">
+<li><p>Add a default router:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In urls.py</span>
+
+<span class="kn">from</span> <span class="nn">rest_framework.routers</span> <span class="kn">import</span> <span class="n">DefaultRouter</span>
+<span class="kn">from</span> <span class="nn">phone_verify.api</span> <span class="kn">import</span> <span class="n">VerificationViewSet</span>
+
+<span class="n">default_router</span> <span class="o">=</span> <span class="n">DefaultRouter</span><span class="p">(</span><span class="n">trailing_slash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">default_router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;phone&#39;</span><span class="p">,</span> <span class="n">VerificationViewSet</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="s1">&#39;phone&#39;</span><span class="p">)</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">default_router</span><span class="o">.</span><span class="n">urls</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong>: It is recommended that you should verify the phone number of users before their registration.</p>
+</section>
+<section id="case-2-verify-phone-number-at-the-time-of-user-registration">
+<h3>Case 2: Verify phone number at the time of user registration<a class="headerlink" href="#case-2-verify-phone-number-at-the-time-of-user-registration" title="Permalink to this heading">¶</a></h3>
+<p>This is the case when you choose to integrate your user registration process with phone number verification.</p>
+<p><strong>NOTE</strong>: Here, you’ll first register a phone number using <code class="docutils literal notranslate"><span class="pre">/api/phone/register</span></code> and then, will use the endpoint <code class="docutils literal notranslate"><span class="pre">/api/phone/verify_and_register</span></code> to create a user on successful verification of the phone number.</p>
+<ul class="simple">
+<li><p>Add a default router in <em>urls</em> to redirect on one of your custom viewset:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In urls.py</span>
+
+<span class="kn">from</span> <span class="nn">rest_framework.routers</span> <span class="kn">import</span> <span class="n">DefaultRouter</span>
+<span class="kn">from</span> <span class="nn">yourapp.api</span> <span class="kn">import</span> <span class="n">YourCustomViewSet</span>
+
+<span class="n">default_router</span> <span class="o">=</span> <span class="n">DefaultRouter</span><span class="p">(</span><span class="n">trailing_slash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">default_router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;phone&#39;</span><span class="p">,</span> <span class="n">YourCustomViewSet</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="s1">&#39;phone&#39;</span><span class="p">)</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">default_router</span><span class="o">.</span><span class="n">urls</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <em>YourCustomSerializer</em>:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In serializers.py</span>
+
+<span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+<span class="kn">from</span> <span class="nn">phone_verify.serializers</span> <span class="kn">import</span> <span class="n">SMSVerificationSerializer</span>
+
+<span class="k">class</span> <span class="nc">YourUserSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">EmailField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;First&quot;</span><span class="p">)</span>
+    <span class="o">...</span>
+
+
+<span class="k">class</span> <span class="nc">YourCustomSerializer</span><span class="p">(</span><span class="n">UserSerializer</span><span class="p">,</span> <span class="n">SMSVerificationSerializer</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Add a service to create users:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your services.py</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">get_user_model</span>
+
+<span class="k">def</span> <span class="nf">create_user_account</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_args</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_args</span>
+    <span class="p">)</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">user</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <em>YourCustomViewSet</em>:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your api.py</span>
+
+<span class="kn">from</span> <span class="nn">rest_framework.decorators</span> <span class="kn">import</span> <span class="n">action</span>
+<span class="kn">from</span> <span class="nn">rest_framework.permissions</span> <span class="kn">import</span> <span class="n">AllowAny</span>
+<span class="kn">from</span> <span class="nn">rest_framework.response</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="kn">from</span> <span class="nn">phone_verify.api</span> <span class="kn">import</span> <span class="n">VerificationViewSet</span>
+<span class="kn">from</span> <span class="nn">phone_verify</span> <span class="kn">import</span> <span class="n">serializers</span> <span class="k">as</span> <span class="n">phone_serializers</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">services</span><span class="p">,</span> <span class="n">serializers</span>
+
+
+<span class="k">class</span> <span class="nc">YourCustomViewSet</span><span class="p">(</span><span class="n">VerificationViewSet</span><span class="p">):</span>
+
+    <span class="nd">@action</span><span class="p">(</span><span class="n">detail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span> <span class="n">permission_classes</span><span class="o">=</span><span class="p">[</span><span class="n">AllowAny</span><span class="p">],</span> <span class="n">serializer_class</span><span class="o">=</span><span class="n">serializers</span><span class="o">.</span><span class="n">YourCustomSerializer</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">verify_and_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to verify phone number and register a user</span>
+
+<span class="sd">        Most of the code here is corresponding to the &quot;verify&quot; view already present in the package.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">phone_serializers</span><span class="o">.</span><span class="n">SMSVerificationSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Add your custom code here.</span>
+        <span class="c1"># An example is shown below:</span>
+
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">YourUserSerializer</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">serializer</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">services</span><span class="o">.</span><span class="n">create_user_account</span><span class="p">(</span><span class="o">**</span><span class="n">serializer</span><span class="o">.</span><span class="n">validated_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong>:</p>
+<ol class="arabic simple">
+<li><p>Using the above method, we are coupling the phone verification and user registration process. One can also override the <code class="docutils literal notranslate"><span class="pre">verify</span></code> view to perform additional actions such as registering the user, registering a company with the verified phone number, etc.</p></li>
+<li><p>After inheriting <code class="docutils literal notranslate"><span class="pre">VerificationViewSet</span></code>, in case you would like to override <code class="docutils literal notranslate"><span class="pre">get_serializer_class</span></code>, then after specifying all your conditions, you must return <code class="docutils literal notranslate"><span class="pre">self.serializer_class</span></code>. For example:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_serializer_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;verify_and_register&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">serializers</span><span class="o">.</span><span class="n">YourCustomSerializer</span>
+    <span class="o">...</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializer_class</span>
+</pre></div>
+</div>
+<p>Otherwise, serializer classes for <code class="docutils literal notranslate"><span class="pre">verify</span></code> and <code class="docutils literal notranslate"><span class="pre">register</span></code> views will not be available.</p>
+<ol class="arabic simple" start="3">
+<li><p>Latest <code class="docutils literal notranslate"><span class="pre">security_code</span></code> generated for a <code class="docutils literal notranslate"><span class="pre">phone_number</span></code> can be found at <code class="docutils literal notranslate"><span class="pre">/admin/phone_verify/smsverification/</span></code> URL.</p></li>
+<li><p>Django’s <code class="docutils literal notranslate"><span class="pre">post_save</span></code> signal can be leveraged through its usage in <code class="docutils literal notranslate"><span class="pre">phone_verify.models.SMSVerification</span></code> function. Additional functionality can be hooked via the <code class="docutils literal notranslate"><span class="pre">post_save</span></code> signal by creating the following receiver.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In signals.py</span>
+<span class="kn">from</span> <span class="nn">phone_verify.models</span> <span class="kn">import</span> <span class="n">SMSVerification</span>
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">post_save</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="kn">import</span> <span class="n">receiver</span>
+<span class="kn">from</span> <span class="nn">django.core.mail</span> <span class="kn">import</span> <span class="n">send_mail</span>
+
+
+<span class="c1"># `send_phone_verify_email` function will get fired when a new entry is created or the model instance is updated</span>
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">post_save</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="n">SMSVerification</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">send_phone_verify_email</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># Check if the instance is created or not</span>
+    <span class="k">if</span> <span class="n">created</span><span class="p">:</span>
+        <span class="n">send_mail</span><span class="p">(</span>
+            <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Subject here&#39;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Here is the message.&#39;</span><span class="p">,</span>
+            <span class="n">from_email</span><span class="o">=</span><span class="s1">&#39;from@example.com&#39;</span><span class="p">,</span>
+            <span class="n">recipient_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;to@example.com&#39;</span><span class="p">],</span>
+            <span class="n">fail_silently</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to Use Django Phone Verify?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#case-1-verify-phone-number-before-after-user-registration">Case 1: Verify phone number before/after user registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-2-verify-phone-number-at-the-time-of-user-registration">Case 2: Verify phone number at the time of user registration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how_to_write_custom_backend.html">How to write custom backend?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html#local-development-and-testing">Local Development and testing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="how_to_write_custom_backend.html" title="next chapter">How to write custom backend?</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Project Setup &#8212; Python  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="How to write custom backend?" href="how_to_write_custom_backend.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>Thank you for your interest in contributing to this project. The following set of steps should help you get started with contributing to <code class="docutils literal notranslate"><span class="pre">django-phone-verify</span></code>.</p>
+<section id="project-setup">
+<h1>Project Setup<a class="headerlink" href="#project-setup" title="Permalink to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p>Clone the git repository for this project onto your local system.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">CuriousLearner</span><span class="o">/</span><span class="n">django</span><span class="o">-</span><span class="n">phone</span><span class="o">-</span><span class="n">verify</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a virtual environment. You may use any tool of your choice.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m venv venv
+</pre></div>
+</div>
+<p>Activate env using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source venv/bin/activate
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Install the python dependencies via the following command. Make sure you are in the root directory.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv) $ python -m pip install -r requirements/development.txt
+</pre></div>
+</div>
+<p>That’s it! You now have a local setup of <code class="docutils literal notranslate"><span class="pre">django-phone-verify</span></code>. You can start contributing to it.</p>
+</section>
+<section id="running-tests">
+<h1>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">django-phone-verify</span></code> has unit tests located in the <code class="docutils literal notranslate"><span class="pre">tests/</span></code> directory. The project uses <code class="docutils literal notranslate"><span class="pre">pytest</span></code> to write and run the tests.</p>
+<p>Before we proceed with performing tests, we should install the testing dependencies. Install the testing requirements via the following command. Make sure you are in the root directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv) $ python -m pip install requirements/testing.txt
+</pre></div>
+</div>
+<p>To run the test, you have to run the <code class="docutils literal notranslate"><span class="pre">pytest</span></code> command. If you want to get the code coverage, use the <code class="docutils literal notranslate"><span class="pre">--cov</span></code> argument as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv) $ pytest --cov
+</pre></div>
+</div>
+<p>This will list down the current code coverage.</p>
+<p>To test your changes with different versions of Python &amp; Django that the project supports, you can use <code class="docutils literal notranslate"><span class="pre">tox</span></code> like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv) $ tox
+</pre></div>
+</div>
+<p>This would run all the tests with a combination of all Python/Django versions that it supports. Check the <code class="docutils literal notranslate"><span class="pre">tox.ini</span></code> file at the root of the project for more details.</p>
+</section>
+<section id="local-development-and-testing">
+<h1>Local Development and testing<a class="headerlink" href="#local-development-and-testing" title="Permalink to this heading">¶</a></h1>
+<p>Once you’ve made code changes, you can install this local development copy of the Django app in your project by using the <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> in the following manner:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /path/to/new/django/project
+$ pip install -e /path/to/local/django-phone-verify
+</pre></div>
+</div>
+<p>This will install your local modified copy of the app in your Django application rather than fetching it from PyPI. After you’re satisfied with the changes, you can run tests using the <a class="reference external" href="#running-tests">running tests</a> section above.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Python</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">How to Use Django Phone Verify?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to_write_custom_backend.html">How to write custom backend?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#local-development-and-testing">Local Development and testing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="how_to_write_custom_backend.html" title="previous chapter">How to write custom backend?</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/contributing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
